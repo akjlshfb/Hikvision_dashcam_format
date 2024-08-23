@@ -1,8 +1,8 @@
-# index00.bin index01.bin index02.bin
+# indexXX.bin 文件结构
 
-这三个文件的结构完全相同。根据目前对文件最后修改时间的观察，猜测`index00.bin`记录着最新的目录信息。开机时会把`index00.bin`备份至`index02.bin`。关机前，会把`index00.bin`备份到`index01.bin`。
+ `index00.bin`、`index01.bin`和`index02.bin`这三个文件的结构完全相同。根据目前对文件最后修改时间的观察，猜测`index00.bin`记录着最新的目录信息。开机时会把`index00.bin`备份至`index02.bin`。关机前，会把`index00.bin`备份到`index01.bin`。
 
-即，取出SD卡用电脑读取时，`index00.bin`与`index01.bin`的内容相同，而`index02.bin`中存储的是过时的数据。因此，后续分析都是对`index00.bin`的分析。
+即，取出SD卡用电脑读取时，`index00.bin`与`index01.bin`的内容相同，而`index02.bin`中存储的是过时的数据。因此，只需要分析记录最新数据的`index00.bin`。
 
 index文件总体结构大致如下：
 
@@ -11,7 +11,7 @@ index文件总体结构大致如下：
 | 1 | 总体信息 |
 | 2 | 每一个`hivXXXXX.mp4`记录文件总体信息 |
 | 3 | 不明 |
-| 4 | 每一个`hivXXXXX.mp4`记录文件中每一段视频/抓拍的信息 |
+| 4 | 每一个`hivXXXXX.mp4`记录文件中每一段视频/每一张抓拍的信息 |
 
 ## 第一段
 
