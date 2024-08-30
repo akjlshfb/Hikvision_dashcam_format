@@ -28,7 +28,7 @@ private_stream_1的data部分包含了很多信息，到目前为止只有一小
 
 <sup>1</sup> 数据长度，指的是从sub_pkt_id的第1个字节（含）一直到本个private_stream_1包末尾（含）的长度。此处记录了数据长度的四分之一，数据长度总是4的整倍数。
 
-参考[PES_packet_length含义](./hiv_mp4_video.md#jump_pes_len)，可知 $PES\_packet\_length = pkt\_len * 4 + 14$
+参考[PES_packet_length含义](./hiv_mp4_video.md#jump_pes_len)，可知 $`PES\_packet\_length = pkt\_len * 4 + 14`$
 
 ### pkt_id sub_pkt_id含义
 
@@ -82,7 +82,7 @@ pkt_id和sub_pkt_id不同，则private_data所含内容和结构也不同。经�
 
 x为帧序数，整数。每两个同类数据包之间相隔200毫秒，因此x相差6（假设30fps）。
 
-y为时间戳，整数，以毫秒为单位。y与PES_packet header中的PTS的关系为 $\frac{y}{1000} = \frac{PTS}{90*10^3}$ 。每两个同类数据包之间相隔200毫秒，因此y相差200。
+y为时间戳，整数，以毫秒为单位。y与PES_packet header中的PTS的关系为 $y = \frac{PTS}{90}$ 。每两个同类数据包之间相隔200毫秒，因此y相差200。
 
 ### 加速度计数据
 
