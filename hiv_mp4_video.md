@@ -274,9 +274,20 @@ GPS信息使用的是WGS84坐标系，其与国内使用的GCJ02坐标系有一�
 
 对于program_stream_map、视频和音频的PES_packet结构，请参阅相关公开的标准文件，后续仅讨论行车记录仪自定义的private_stream_1的结构。
 
-### private_stream_1 PES_packet header
+### PES_packet结构
 
-根据标准，所有PES_packet都包括header和后面的data两部分。而header长度会因其config不同而不同。但是根据观察，文件中所有的private_stream_1 packet的config均相同，因此所有header的格式都一样，长度都为`0x10`。header结构如下表。***header中基本只有PES_packet_length对后续分析有用。***
+根据标准，所有PES_packet都包括header和后面的data两部分。如下表：
+
+|  | 内容 |
+| ---- | ---- |
+| header | 包类型、包长度、config信息、时间戳等 |
+| data | 具体数据 |
+
+下面说明private_stream_1 PES_packet的header和data结构。
+
+### <span id="jump_pes_header">private_stream_1 PES_packet header</span>
+
+PES_packet header长度会因其config不同而不同。但是根据观察，文件中所有的private_stream_1 packet的config均相同，因此所有header的格式都一样，长度都为`0x10`。header结构如下表。***header中基本只有PES_packet_length对后续分析有用。***
 
 | Syntax | 比特数 | 注释 |
 | ---- | ---- | ---- |
@@ -306,7 +317,7 @@ GPS信息使用的是WGS84坐标系，其与国内使用的GCJ02坐标系有一�
 | marker_bit | 1 | 总是`0b1` |
 | stuffing_byte | 16 | 总是`0xFF 0xF8` |
 
-<sup>1</sup> 此处的PES包长度的含义是PES_packet_length之后的一字节开始（含），到整个PES包的最后一字节（含）的长度。
+<sup>1</sup> <span id="jump_pes_len">此处的PES包长度</span>的含义是PES_packet_length之后的一字节开始（含），到整个PES包的最后一字节（含）的长度。
 
 <sup>2</sup> PES_header_data_length指的是PTS和stuffing_byte的长度之和，以字节为单位。
 
@@ -314,13 +325,13 @@ GPS信息使用的是WGS84坐标系，其与国内使用的GCJ02坐标系有一�
 
 经过上表分析可知，header中会变化的只有两项：PTS和PES包长度。
 
-PTS和PES包出现的时间有关，但是其内部的GPS等数据又会有另外的时间戳表示时间，因此这里的PTS可以仅作为一个参考。
+PTS和PES包出现的时间有关，但是其内部的GPS等数据又会有另外的时间戳表示时间，因此这里的PTS可以仅作为一个参考。行车记录仪的PTS总是可以整除90，从而得到一个以毫秒为单位的整数时间戳。
 
 PES包长度确定了后续data的长度。由于在PES包长度之后，data开始之前，header还有10个字节，因此所有private_stream_1的data长度可用`PES_packet_length - 10`表示。
 
 ### private_stream_1 PES_packet data
 
-private_stream_1 PES_packet data包括了GPS、加速度计、红绿灯识别、前车起步识别等信息。其内部结构较为复杂。具体请参考private_stream_1数据格式。
+private_stream_1 PES_packet data包括了GPS、加速度计、红绿灯识别、前车起步识别等信息。其内部结构较为复杂。具体请参考[private_stream_1数据格式](./private_stream_1.md)。
 
 观察发现：
 - GPS数据记录频率为每秒1次。
