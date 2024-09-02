@@ -289,7 +289,7 @@ GPS信息使用的是WGS84坐标系，其与国内使用的GCJ02坐标系有一�
 
 PES_packet header长度会因其config不同而不同。但是根据观察，文件中所有的private_stream_1 packet的config均相同，因此所有header的格式都一样，长度都为`0x10`。header结构如下表。***header中基本只有PES_packet_length对后续分析有用。***
 
-| Syntax | 比特数 | 注释 |
+| Syntax | *比特*数 | 注释 |
 | ---- | ---- | ---- |
 | packet_start_code_prefix | 24 | 总是`0x00 0x00 0x01` |
 | stream_id | 8 | 总是`0xBD`，对应private_stream_1 |
@@ -325,7 +325,7 @@ PES_packet header长度会因其config不同而不同。但是根据观察，文
 
 经过上表分析可知，header中会变化的只有两项：PTS和PES包长度。
 
-PTS和PES包出现的时间有关，但是其内部的GPS等数据又会有另外的时间戳表示时间，因此这里的PTS可以仅作为一个参考。行车记录仪的PTS总是可以整除90，从而得到一个以毫秒为单位的整数时间戳。
+<span id="jump_pts_timestamp">PTS和PES包出现的时间有关，可以将其当作一个行车记录仪内部的时间戳。行车记录仪的PTS总是可以整除90，从而得到一个以毫秒为单位的整数时间戳。</span>
 
 PES包长度确定了后续data的长度。由于在PES包长度之后，data开始之前，header还有10个字节，因此所有private_stream_1的data长度可用`PES_packet_length - 10`表示。
 
