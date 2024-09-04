@@ -235,4 +235,4 @@ part_8长度固定为0x28。其含义不明。结构为：
 | 0x10 | 24 | NA | 不明 |
 
 <br/><br/>
-返回[private_stream_1数据格式](./private_stream_1.md)
+返回[private_stream_1数据格式](./private_stream_1.md#private_data)

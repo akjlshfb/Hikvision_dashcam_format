@@ -56,4 +56,4 @@ part_3长度总是`part_3_len - 0x650`。这里与上一类数据包不同，上
 其他part的含义都和[上一类数据包](./private_misc_1.md)相同，请参照相应文档。
 
 <br/><br/>
-返回[private_stream_1数据格式](./private_stream_1.md)
+返回[private_stream_1数据格式](./private_stream_1.md#private_data)

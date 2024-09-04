@@ -69,4 +69,4 @@
 GPS数据包每秒1个。与市面上大多数GPS模块输出频率相同。
 
 <br/><br/>
-返回[private_stream_1数据格式](./private_stream_1.md)
+返回[private_stream_1数据格式](./private_stream_1.md#private_data)

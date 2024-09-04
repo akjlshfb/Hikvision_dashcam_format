@@ -56,4 +56,4 @@ y为前向加速度，有符号整数，以 $cm \cdot s^{-2}$ 为单位，以前
 z为纵向加速度，有符号整数，以 $cm \cdot s^{-2}$ 为单位，以**下**方为正方向。
 
 <br/><br/>
-返回[private_stream_1数据格式](./private_stream_1.md)
+返回[private_stream_1数据格式](./private_stream_1.md#private_data)
