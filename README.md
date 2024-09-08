@@ -5,15 +5,15 @@
 ## 文档结构
 
 本文档介绍SD卡中存储的各种文件的格式。主要结构如下：
-- [SD卡根目录](./doc/SD_card.md)
-  - [index文件](./doc/index.md)
-  - [mp4文件](./doc/hiv_mp4.md)
-    - [视频文件](./doc/hiv_mp4_video.md)
-        - [视频文件额外信息](./doc/private_stream_1.md)
-    - [抓拍文件](./doc/hiv_mp4_photo.md)
-  - [log文件](./doc/log.md)
+- [SD卡根目录](./docs/SD_card.md)
+  - [index文件](./docs/index.md)
+  - [mp4文件](./docs/hiv_mp4.md)
+    - [视频文件](./docs/hiv_mp4_video.md)
+        - [视频文件额外信息](./docs/private_stream_1.md)
+    - [抓拍文件](./docs/hiv_mp4_photo.md)
+  - [log文件](./docs/log.md)
 
-推荐从[SD卡根目录](./doc/SD_card.md)开始按顺序浏览。
+推荐从[SD卡根目录](./docs/SD_card.md)开始按顺序浏览。
 
 ## 其他说明
 
