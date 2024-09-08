@@ -231,7 +231,9 @@ index文件总体结构大致如下：
 | 0x48 | 4 | NA | 不明，总是`0x00 0x00 0x00 0x10` |
 | 0x4C | 4 | NA | 不明，总是`0x00 0x00 0x00 0x10` |
 
-<sup>1</sup> 在`hivXXXXX.mp4`文件中，在照片数据之前，还有4节总长度为`0x40000`的其他数据。详见[视频文件结构](./hiv_mp4_video.md)。
+<sup>1</sup> 在`hivXXXXX.mp4`文件中，在照片数据之前，还有4节总长度为`0x40000`的其他数据。详见[抓拍文件结构](./hiv_mp4_photo.md)。
 
 <br/><br/>
+`hivXXXXX.mp4`文件结构请参看[hivXXXXX.mp4 文件简介](./hiv_mp4.md)
+
 返回[SD卡根目录结构](./SD_card.md)

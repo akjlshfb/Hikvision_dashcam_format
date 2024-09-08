@@ -43,4 +43,4 @@
 至于每一分段各节的数据格式，视频文件和抓拍文件差异较大。请参阅[视频文件分段结构](./hiv_mp4_video.md)和[抓拍文件分段结构](./hiv_mp4_photo.md)。
 
 <br/><br/>
-返回[indexXX.bin 文件结构](./index.md)
+返回[SD卡根目录结构](./SD_card.md)
