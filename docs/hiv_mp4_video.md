@@ -74,7 +74,7 @@
 
 <sup>4</sup> 后续数据指的是header后以`0x30`为一组的GPS数据长度。因此这里除以`0x30`可以知道后面记录GPS数据点的个数。后文记为`gps_data_num`。
 
-### body
+### <span id="jump_segment_header_gps">body</span>
 
 接下来的数据以`0x30`为一组，代表了某一秒钟的视频与GPS信息。共有`gps_data_num`组数据。
 
@@ -104,9 +104,11 @@ GPS信息使用的是WGS84坐标系，其与国内使用的GCJ02坐标系有一�
 
 <sup>2</sup> 从天上向下看，从正北顺时针旋转的角度。
 
-<sup>3</sup> 此处的高度指的是距离[GPS参考椭球面](https://zh.wikipedia.org/wiki/%E5%8F%82%E8%80%83%E6%A4%AD%E7%90%83)的椭球高，而非距离[大地水准面](https://zh.wikipedia.org/wiki/%E5%A4%A7%E5%9C%B0%E6%B0%B4%E5%87%86%E9%9D%A2)的正高。因此可能出现在海边但高度不为0的情况。
+<sup>3</sup> 此处的高度指的是距离[GPS参考椭球面](https://zh.wikipedia.org/wiki/%E5%8F%82%E8%80%83%E6%A4%AD%E7%90%83)的椭球高，而非距离[大地水准面](https://zh.wikipedia.org/wiki/%E5%A4%A7%E5%9C%B0%E6%B0%B4%E5%87%86%E9%9D%A2)的正高。因此可能出现在海边但高度不为0的情况。高度的精度可到分米位，其厘米位总是0。
 
 无法定位时，经纬度、速度、方位角高度等信息不存在。因此`0x10`及处以后的数据都为`0x00`。
+
+`hivXXXXX.mp4`文件中记录GPS位置信息的地方有两处。一处是这里，每一段的header，另一处在视频中的private_stream_1包中。这两处所记录的GPS信息不完全一致，详情请见[二进制格式GPS数据与header中GPS数据的区别](./private_bin_acce_gps.md#jump_gps_data_difference)。
 
 后续至第2节开始前数据都为`0x00`。
 
