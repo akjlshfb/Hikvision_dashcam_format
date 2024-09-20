@@ -2,7 +2,8 @@
 
 import json
 import os
-import time
+
+import common
 
 sd_dir_path = './misc'
 json_output_dir = sd_dir_path
@@ -19,11 +20,6 @@ def print_error(error_msg):
 def print_warning(warn_msg):
     print('Warning: ' + warn_msg)
     raise
-
-# Assume dashcam is at the same timezone as the computer
-def adjust_tz(timestamp):
-    return timestamp - time.timezone
-
 
 # Test file path
 if not os.path.isdir(sd_dir_path):
@@ -105,8 +101,8 @@ with open(index_file_path, 'rb') as index_file:
                     print_error('Seg 4 0x00 error. Photo should be 0x02.')
                 else:
                     seg_info['seg_type'] = 'photo'
-            seg_info['start_time'] = adjust_tz(int.from_bytes(buf2[0x08:0x0C], 'little'))
-            seg_info['end_time'] = adjust_tz(int.from_bytes(buf2[0x10:0x14], 'little'))
+            seg_info['start_time'] = common.adjust_tz(int.from_bytes(buf2[0x08:0x0C], 'little'))
+            seg_info['end_time'] = common.adjust_tz(int.from_bytes(buf2[0x10:0x14], 'little'))
             seg_info['start_pos'] = int.from_bytes(buf2[0x28:0x2C], 'little') - 0x40000
             seg_info['end_pos'] = int.from_bytes(buf2[0x2C:0x30], 'little')
             if file_no != photo_file_no:
