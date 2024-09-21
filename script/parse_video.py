@@ -4,6 +4,7 @@ import os
 import struct
 import copy
 import json
+import time
 from datetime import datetime, timezone
 
 import common
@@ -31,6 +32,8 @@ with open(json_file_path, 'r') as json_file:
 
 # print(record_file_index)
 seg_info = record_file_index['record_file_infos'][file_no]['seg_infos'][seg_no]
+
+#===========================================
 
 video_file_name = 'hiv%05d.mp4' % file_no
 video_file_path = os.path.join(sd_dir_path, video_file_name)

@@ -5,6 +5,9 @@ import os
 
 import common
 
+# Use pytz.all_timezones to see all timezones
+timezone_str = 'US/Pacific'
+
 sd_dir_path = './misc'
 json_output_dir = sd_dir_path
 
@@ -13,6 +16,8 @@ index_01_file_name = 'index01.bin'
 
 json_file_name = 'record_file_index.json'
 
+#===========================================
+
 def print_error(error_msg):
     print('Error: ' + error_msg)
     raise
@@ -20,6 +25,9 @@ def print_error(error_msg):
 def print_warning(warn_msg):
     print('Warning: ' + warn_msg)
     raise
+
+# Set global timezone
+common.set_timezone(timezone_str)
 
 # Test file path
 if not os.path.isdir(sd_dir_path):
