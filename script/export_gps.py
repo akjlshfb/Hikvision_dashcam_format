@@ -77,4 +77,4 @@ for gps_track in gps_tracks:
 gpx_track.description = track_desc(gpx_segment) # last one
 
 with open(gpx_path, 'w+') as f:
-    f.write(gpx.to_xml())
+    f.write(gpx.to_xml(version = '1.0'))
