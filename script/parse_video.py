@@ -11,12 +11,11 @@ import common
 #===========================================
 
 def parse_seg(
-        file_no: int, seg_no: int,
         sd_dir_path: str,
+        file_no: int, seg_no: int,
         record_file_index: dict,
         parse_options: dict,
-        start_sec: int = -1, end_sec: int = -1,
-        video_file_adding = False
+        start_sec: int = -1, end_sec: int = -1
     ) -> dict:
     """
     Parse a segment to get video, GPS track, etc.
@@ -26,7 +25,7 @@ def parse_seg(
     record_file_index: dict
         Index returned by parse_index.parse()
     parse_options: dict
-        See readme.md
+        See README.md
     start_sec: int
         When to start parsing. First is 0. -1 means first.
     end_sec: int
@@ -34,7 +33,7 @@ def parse_seg(
 
     Returns
     ----------
-    result: dict
+    parse_seg_result: dict
         A dict containing various info.
     """
 
@@ -143,7 +142,7 @@ def parse_seg(
         
         f.seek(seg_start_pos)
         if parse_options['export_video']:
-            if video_file_adding:
+            if ('export_video_adding' in parse_options) and parse_options['export_video_adding']:
                 of = open(parse_options['export_video_path'], 'ab+')
             else:
                 of = open(parse_options['export_video_path'], 'wb+')
@@ -260,8 +259,8 @@ def parse_seg(
     return parse_seg_result
 
 def parse_video(
-        video_segs: list,
         sd_dir_path: str,
+        video_segs: list,
         record_file_index: dict,
         parse_options: dict
     ) -> dict:
@@ -271,15 +270,15 @@ def parse_video(
     Parameters
     ----------
     video_segs: list
-        Contains segments of a consecutive video. From parse_index.search()[]. See readme.md
+        Contains segments of a consecutive video. From parse_index.search()[]. See README.md
     record_file_index: dict
         Index returned by parse_index.parse()
     parse_options: dict
-        See readme.md
+        See README.md
 
     Returns
     ----------
-    result: dict
+    parse_video_result: dict
         A dict containing various info.
     """
 
@@ -298,6 +297,8 @@ def parse_video(
         # Create and clear video export file
         f = open(parse_options['export_video_path'], 'wb+')
         f.close()
+        # Set to add to export video file
+        parse_seg_options['export_video_adding'] = True
 
     for segment in video_segs:
         file_no = segment['file_no']
@@ -306,9 +307,8 @@ def parse_video(
         end_sec = segment['end']
 
         parse_seg_result = parse_seg(
-            file_no, seg_no, sd_dir_path, record_file_index,
-            parse_seg_options, start_sec, end_sec,
-            video_file_adding = True # Adding to video export file
+            sd_dir_path, file_no, seg_no, record_file_index,
+            parse_seg_options, start_sec, end_sec
         )
 
         gps_data_num = gps_data_num + parse_seg_result['gps_info']['gps_data_num']
@@ -324,4 +324,75 @@ def parse_video(
     acce_info['acce_log'] = acce_log
     parse_video_result['acce_info'] = acce_info
 
+    parse_video_result['parking'] = segment['parking']
+
     return parse_video_result
+
+def parse_videos(
+        sd_dir_path: str,
+        videos: list,
+        record_file_index: dict,
+        parse_options: dict
+    ) -> dict:
+    """
+    Parse a segment to get video, GPS track, etc.
+
+    Parameters
+    ----------
+    videos: list
+        Contains a list of consecutive videos. From parse_index.search(). See README.md
+    record_file_index: dict
+        Index returned by parse_index.parse()
+    parse_options: dict
+        See README.md
+
+    Returns
+    ----------
+    parse_videos_result: dict
+        A dict containing various info.
+    """
+
+    parse_video_options = {}
+    parse_video_options['export_video'] = parse_options['export_videos']
+    parse_video_options['gps_track'] = parse_options['gps_track']
+    parse_video_options['acce'] = parse_options['acce']
+    parse_video_options['image_label'] = parse_options['image_label']
+    have_filenames = (
+        ('export_video_names' in parse_options) and
+        (len(parse_options['export_video_names']) != 0)
+    )
+    parse_videos_result = []
+
+    for i in range(len(videos)):
+        video = videos[i]
+        parse_video_result = {}
+
+        if parse_video_options['export_video']:
+            if not have_filenames:
+                file_no = video[0]['file_no']
+                seg_no = video[0]['seg_no']
+                file_info = record_file_index['record_file_infos'][file_no]
+                start = file_info['seg_infos'][seg_no]['start_time']
+                start = datetime.fromtimestamp(start, common.timezone)
+                file_name = start.strftime('%Y%m%d%H%M%S.mp4')
+                file_path = os.path.join(
+                    parse_options['export_videos_folder'],
+                    file_name
+                )
+            else:
+                file_path = os.path.join(
+                    parse_options['export_videos_folder'],
+                    parse_options['export_video_names'][i]
+                )
+            parse_video_options['export_video_path'] = file_path
+            parse_video_result['video_path'] = file_path
+
+        telemetry = parse_video(
+            sd_dir_path, video, record_file_index, parse_video_options
+        )
+
+        parse_video_result['telemetry'] = telemetry
+
+        parse_videos_result.append(parse_video_result)
+
+    return parse_videos_result

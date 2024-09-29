@@ -1,12 +1,19 @@
 # For GPS WGS84 ellipsoidal height to above MSL height transition
-
-from pyproj import CRS
-from pyproj import Transformer
+try:
+    from pyproj import CRS
+    from pyproj import Transformer
+    has_pyproj = True
+except ImportError:
+    # Pyproj is not installed
+    has_pyproj = False
 
 # Input CRS: WGS84(horizontal + vertical), global, used by GPS.
 # EPSG 9754: WGS84(G2139), revision date: 2021-12-03
 # This CRS is used by dashcam's GPS module. Should not modify.
-_crs_in_epsg_id = 9754
+__crs_in_epsg_id = 9754
+
+# Cartesian 3D coordination system. Use XYZ axis.
+__crs_in_xyz_espg_id = 9753
 
 # Output CRS: NAD83(horizontal) + NAVD88(vertical), North America only,
 # NAVD88(orthometric height) can be used by Google Earth for elevtion.
@@ -15,10 +22,24 @@ _crs_in_epsg_id = 9754
 crs_out_epsg_id = 5498
 
 # CRS transition transformer
-_t = Transformer.from_crs(
-    CRS.from_epsg(_crs_in_epsg_id),
+__t = Transformer.from_crs(
+    CRS.from_epsg(__crs_in_epsg_id),
     CRS.from_epsg(crs_out_epsg_id)
-)
+) if has_pyproj else None
+
+# XYZ and lat lon height system transformrs
+__t_latlon_to_xyz = Transformer.from_crs(
+    CRS.from_epsg(__crs_in_epsg_id),
+    CRS.from_epsg(__crs_in_xyz_espg_id)
+) if has_pyproj else None
+__t_xyz_to_latlon = Transformer.from_crs(
+    CRS.from_epsg(__crs_in_xyz_espg_id),
+    CRS.from_epsg(__crs_in_epsg_id)
+) if has_pyproj else None
+__t_xyz_to_latlonelev = Transformer.from_crs(
+    CRS.from_epsg(__crs_in_xyz_espg_id),
+    CRS.from_epsg(crs_out_epsg_id)
+) if has_pyproj else None
 
 # orthometric_height = ellipsoidal_height - geoid_height
 # Geoid height is the height geoid above an ellipsoid
@@ -26,10 +47,68 @@ geoid_height = 0
 
 def set_geoid_height(lat: float, lon: float):
     global geoid_height
-    (lat1, lon1, geoid_height) = _t.transform(lat, lon, 0.0)
-    geoid_height = -geoid_height
+    if has_pyproj:
+        (lat1, lon1, geoid_height) = __t.transform(lat, lon, 0.0)
+        geoid_height = -geoid_height
+    else:
+        print('Error: Pyproj is not installed. You should directly set geoid height.')
+        exit()
 
 # Transform WGS84 ellipsoidal height to above MSL height
 def get_elev(lat: float, lon: float, height: float) -> float:
-    (lat1, lon1, h) = _t.transform(lat, lon, height)
-    return h
+    if has_pyproj:
+        (lat1, lon1, h) = __t.transform(lat, lon, height)
+        return h
+    else:
+        # orthometric_height = ellipsoidal_height - geoid_height
+        global geoid_height
+        return (height - geoid_height)
+
+def t_latlon_to_xyz(lat: float, lon: float, height: float) -> tuple:
+    """
+    Transform from latitude longtitude ellipsoidal height to
+    XYZ coordination system.
+
+    Returns
+    ----------
+    tuple(x, y, z)
+    """
+    if has_pyproj:
+        return __t_latlon_to_xyz.transform(lat, lon, height)
+    else:
+        #TODO: Manually transform
+        print('Error: not implemented.')
+        exit()
+
+def t_xyz_to_latlon(x: float, y: float, z: float) -> tuple:
+    """
+    Transform from XYZ to latitude longtitude
+    ellipsoidal height coordination system.
+
+    Returns
+    ----------
+    tuple(lat, lon, height)
+    """
+    if has_pyproj:
+        return __t_xyz_to_latlon.transform(x, y, z)
+    else:
+        #TODO: Manually transform
+        print('Error: not implemented.')
+        exit()
+
+def t_xyz_to_latlonelev(x: float, y: float, z: float) -> tuple:
+    """
+    Transform from XYZ to latitude longtitude
+    above mean sea level height coordination system.
+
+    Returns
+    ----------
+    tuple(lat, lon, height)
+    """
+    if has_pyproj:
+        return __t_xyz_to_latlonelev.transform(x, y, z)
+    else:
+        #TODO: Manually transform
+        print('Error: not implemented.')
+        exit()
+
