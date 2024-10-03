@@ -2,6 +2,7 @@
 try:
     from pyproj import CRS
     from pyproj import Transformer
+    from pyproj import Geod
     has_pyproj = True
 except ImportError:
     # Pyproj is not installed
@@ -55,7 +56,7 @@ def set_geoid_height(lat: float, lon: float):
         exit()
 
 # Transform WGS84 ellipsoidal height to above MSL height
-def get_elev(lat: float, lon: float, height: float) -> float:
+def get_elev(lat, lon, height) -> float:
     if has_pyproj:
         (lat1, lon1, h) = __t.transform(lat, lon, height)
         return h
@@ -64,7 +65,7 @@ def get_elev(lat: float, lon: float, height: float) -> float:
         global geoid_height
         return (height - geoid_height)
 
-def t_latlon_to_xyz(lat: float, lon: float, height: float) -> tuple:
+def t_latlon_to_xyz(lat, lon, height) -> tuple:
     """
     Transform from latitude longtitude ellipsoidal height to
     XYZ coordination system.
@@ -80,7 +81,7 @@ def t_latlon_to_xyz(lat: float, lon: float, height: float) -> tuple:
         print('Error: not implemented.')
         exit()
 
-def t_xyz_to_latlon(x: float, y: float, z: float) -> tuple:
+def t_xyz_to_latlon(x, y, z) -> tuple:
     """
     Transform from XYZ to latitude longtitude
     ellipsoidal height coordination system.
@@ -96,7 +97,7 @@ def t_xyz_to_latlon(x: float, y: float, z: float) -> tuple:
         print('Error: not implemented.')
         exit()
 
-def t_xyz_to_latlonelev(x: float, y: float, z: float) -> tuple:
+def t_xyz_to_latlonelev(x, y, z) -> tuple:
     """
     Transform from XYZ to latitude longtitude
     above mean sea level height coordination system.
@@ -112,3 +113,11 @@ def t_xyz_to_latlonelev(x: float, y: float, z: float) -> tuple:
         print('Error: not implemented.')
         exit()
 
+def calc_heading(lat1, lon1, lat2, lon2):
+    if has_pyproj:
+        geod = Geod(ellps = 'WGS84')
+        return geod.inv(lon1, lat1, lon2, lat2)[0]
+    else:
+        #TODO: Manually transform
+        print('Error: not implemented.')
+        exit()

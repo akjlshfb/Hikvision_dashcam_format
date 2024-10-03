@@ -124,4 +124,8 @@ with open(index_json_path, 'r') as json_file:
 
 kml_file_path = './misc/test_export.kml'
 
-export_gps.export_kml(kml_file_path, parse_videos_result)
+export_gps.export_kml(
+    kml_file_path, parse_videos_result,
+    export_tour = True,
+    interpolate_track_points = True
+)
