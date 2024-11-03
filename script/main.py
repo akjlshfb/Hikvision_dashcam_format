@@ -20,6 +20,7 @@ timezone_str = 'US/Pacific'
 common.set_timezone(timezone_str)
 
 sd_dir_path = './misc'
+# sd_dir_path = 'D:/'
 index_json_path = './misc/record_file_index.json'
 
 # # ===== parse index =====
@@ -28,10 +29,12 @@ index_json_path = './misc/record_file_index.json'
 
 # # ===== search segment =====
 
-# start = int(datetime(2024, 3, 9, 18, 5, 20, 0).timestamp())
-# end = int(datetime(2024, 3, 9, 18, 6, 40, 0).timestamp())
+# # start = int(datetime(2024, 3, 9, 18, 5, 20, 0).timestamp())
+# # end = int(datetime(2024, 3, 9, 18, 6, 40, 0).timestamp())
 # # start = int(datetime(2024, 6, 30, 1, 20, 15, 0).timestamp())
 # # end = int(datetime(2024, 6, 30, 1, 30, 15, 0).timestamp())
+# start = int(datetime(2024, 9, 21, 15, 48, 20, 0).timestamp())
+# end = int(datetime(2024, 9, 21, 16, 17, 00, 0).timestamp())
 
 # search_result = parse_index.search(record_file_index, start, end)
 

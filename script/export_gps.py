@@ -246,6 +246,9 @@ def export_kml(
     ----------
     telemetries: list
         Result got from garse_video.parse_videos()
+    export_tour: bool
+        Whether to include a tour in the generated KML file.
+        For the tour parameters, see the consets in the function
     interpolate_track_points: bool
         Use cubic spline to interpolate GPS track points.
     interpolate_points_per_gap: int
@@ -276,6 +279,7 @@ def export_kml(
     tour_range_max_speed = 30 # m/s
     tour_range_coeff = (tour_range_max - tour_range_min) / tour_range_max_speed
     tour_lookat_late_sec = 3
+    tour_heading_calc_threshold = 2.0 # meters. Stop calculating new heading if distance is less than this value.
     tour_heading_filter_window_sec = 7 # seconds. otherwise too dizzy x_x
     tour_kml_refresh_period = 1 # seconds, should be less than points_per_sec
     tour_track_from_start = True # Show track from start, instead of just a small tail
@@ -388,10 +392,17 @@ def export_kml(
                 (look_lat_pad, look_lon_pad, look_h_pad) = geoid.t_xyz_to_latlonelev(look_x_pad, look_y_pad, look_z_pad)
                 look_heading_lat = np.concatenate((look_lat_pad, look_lat[:-look_padding_points]))
                 look_heading_lon = np.concatenate((look_lon_pad, look_lon[:-look_padding_points]))
-                look_heading = geoid.calc_heading(look_heading_lat, look_heading_lon, lat, lon)
+                look_heading = geoid.calc_heading(look_heading_lat, look_heading_lon, lat, lon, tour_heading_calc_threshold)
                 # filter heading, otherwise too dizzy
-                look_heading = __mov_avg_filter(look_heading, look_heading_filter_size)
-                # # TODO:  Everything is ready. Generate tour kml data now.
+                # need to consider angle wrap issue, thus convert to sine and cosine
+                look_heading = np.radians(look_heading)
+                look_heading_cos = np.cos(look_heading)
+                look_heading_sin = np.sin(look_heading)
+                look_heading_cos = __mov_avg_filter(look_heading_cos, look_heading_filter_size)
+                look_heading_sin = __mov_avg_filter(look_heading_sin, look_heading_filter_size)
+                look_heading = np.arctan2(look_heading_sin, look_heading_cos)
+                look_heading = np.degrees(look_heading)
+                # #TODO: debug
                 # look_coord = [()] * gps_data_num
         # generate track kml data
         when = [''] * gps_data_num
@@ -474,11 +485,11 @@ def export_kml(
         # look_track.newgxcoord(look_coord)
         # # look_track styling
         # look_track.stylemap.normalstyle.iconstyle.icon.href = 'http://earth.google.com/images/kml-icons/track-directional/track-0.png'
-        # look_track.stylemap.normalstyle.linestyle.color = '99ffac59'
+        # look_track.stylemap.normalstyle.linestyle.color = '990000ff'
         # look_track.stylemap.normalstyle.linestyle.width = 6
         # look_track.stylemap.highlightstyle.iconstyle.icon.href = 'http://earth.google.com/images/kml-icons/track-directional/track-0.png'
         # look_track.stylemap.highlightstyle.iconstyle.scale = 1.2
-        # look_track.stylemap.highlightstyle.linestyle.color = '99ffac59'
+        # look_track.stylemap.highlightstyle.linestyle.color = '990000ff'
         # look_track.stylemap.highlightstyle.linestyle.width = 8
 
         track_no = track_no + 1

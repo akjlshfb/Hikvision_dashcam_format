@@ -113,10 +113,37 @@ def t_xyz_to_latlonelev(x, y, z) -> tuple:
         print('Error: not implemented.')
         exit()
 
-def calc_heading(lat1, lon1, lat2, lon2):
+def calc_heading(lat1, lon1, lat2, lon2, distance_threshold: float = 2.0):
+    """
+    Calculate heading FROM point 1 TO point 2.
+
+    Parameters
+    ----------
+    lat1: list
+        Latitude of point 1
+    lon1: list
+        Longtitude of point 1
+    lat2: list
+        Latitude of point 2
+    lon2: list
+        Longtitude of point 2
+    distance_threshold: float
+        If distance between point 1 and 2 is less than the
+        threshold, previous heading value will be used.
+
+    Returns
+    ----------
+    heading
+    """
     if has_pyproj:
         geod = Geod(ellps = 'WGS84')
-        return geod.inv(lon1, lat1, lon2, lat2)[0]
+        result = geod.inv(lon1, lat1, lon2, lat2)
+        heading = result[0]
+        distance = result[2]
+        for i in range(1, len(heading)):
+            if distance[i] < distance_threshold:
+                heading[i] = heading[i - 1]
+        return heading
     else:
         #TODO: Manually transform
         print('Error: not implemented.')
