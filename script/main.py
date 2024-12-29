@@ -19,27 +19,33 @@ timezone_str = 'US/Pacific'
 # Set global timezone
 common.set_timezone(timezone_str)
 
-sd_dir_path = './misc'
-# sd_dir_path = 'D:/'
-index_json_path = './misc/record_file_index.json'
+sd_dir_path = './misc/240921'
+export_dir_path = './misc/'
 
-# # ===== parse index =====
+index_json_path = os.path.join(export_dir_path, 'record_file_index.json')
+search_json_path = os.path.join(export_dir_path, 'search_result.json')
+telemetry_json_path = os.path.join(export_dir_path, 'video_telemetry.json')
+
+# ===== parse index =====
 
 # record_file_index = parse_index.parse(sd_dir_path, True, index_json_path)
 
 # # ===== search segment =====
 
+# with open(index_json_path, 'r') as json_file:
+#     record_file_index = json.load(json_file)
+
 # # start = int(datetime(2024, 3, 9, 18, 5, 20, 0).timestamp())
 # # end = int(datetime(2024, 3, 9, 18, 6, 40, 0).timestamp())
 # # start = int(datetime(2024, 6, 30, 1, 20, 15, 0).timestamp())
 # # end = int(datetime(2024, 6, 30, 1, 30, 15, 0).timestamp())
-# start = int(datetime(2024, 9, 21, 15, 48, 20, 0).timestamp())
-# end = int(datetime(2024, 9, 21, 16, 17, 00, 0).timestamp())
+start = int(datetime(2024, 9, 21, 15, 50, 00, 0).timestamp())
+end = int(datetime(2024, 9, 21, 16, 17, 00, 0).timestamp())
 
-# search_result = parse_index.search(record_file_index, start, end)
+search_result = parse_index.search(record_file_index, start, end)
 
-# with open('./misc/search.json', 'w+') as f:
-#     json.dump(search_result, f, indent = 2)
+with open(search_json_path, 'w+') as f:
+    json.dump(search_result, f, indent = 2)
 
 # ===== parse video =====
 
@@ -85,13 +91,14 @@ index_json_path = './misc/record_file_index.json'
 # with open('./misc/temp.json', 'w+') as json_file:
 #     json.dump(parse_video_result, json_file, indent = 2)
 
-# ## parse videos test
+# ===== parse video =====
+## parse videos test
 
 # parse_options = {
-#     "export_videos": False,
-#     "export_videos_folder": "./misc/",
+#     "export_videos": True,
+#     "export_videos_folder": export_dir_path,
 #     "gps_track": True,
-#     "acce": True,
+#     "acce": False,
 #     "image_label": False
 # }
 
@@ -99,17 +106,17 @@ index_json_path = './misc/record_file_index.json'
 #     sd_dir_path, search_result, record_file_index, parse_options
 # )
 
-# with open('./misc/temp.json', 'w+') as json_file:
+# with open(telemetry_json_path, 'w+') as json_file:
 #     json.dump(parse_videos_result, json_file, indent = 2)
 
 
 # ===== debug load json =====
 
-## parse videos test
-with open('./misc/temp.json', 'r') as json_file:
-    parse_videos_result = json.load(json_file)
-with open(index_json_path, 'r') as json_file:
-    record_file_index = json.load(json_file)
+# ## parse videos test
+# with open('./misc/temp.json', 'r') as json_file:
+#     parse_videos_result = json.load(json_file)
+# with open(index_json_path, 'r') as json_file:
+#     record_file_index = json.load(json_file)
 
 # # ===== export geojson =====
 
@@ -125,7 +132,7 @@ with open(index_json_path, 'r') as json_file:
 
 # ===== export kml =====
 
-kml_file_path = './misc/test_export.kml'
+kml_file_path = os.path.join(export_dir_path, 'test_export.kml')
 
 export_gps.export_kml(
     kml_file_path, parse_videos_result,

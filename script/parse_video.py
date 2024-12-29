@@ -373,7 +373,8 @@ def parse_videos(
                 seg_no = video[0]['seg_no']
                 file_info = record_file_index['record_file_infos'][file_no]
                 start = file_info['seg_infos'][seg_no]['start_time']
-                start = datetime.fromtimestamp(start, common.timezone)
+                start = start + video[0]['start']
+                start = datetime.fromtimestamp(start, common.local_timezone)
                 file_name = start.strftime('%Y%m%d%H%M%S.mp4')
                 file_path = os.path.join(
                     parse_options['export_videos_folder'],
